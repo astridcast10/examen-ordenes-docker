@@ -1,0 +1,105 @@
+# Arquitectura: Navegador -> web (Django) -> api (Flask) -> db (SQL Server 2022)
+# Levantar todo:  docker compose up -d --build
+
+services:
+  # ---------- 1. Base de datos ----------
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ordenes_db
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Define MSSQL_SA_PASSWORD en el archivo .env}
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 40s
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 2G }
+
+  # ---------- Inicializacion de la BD (corre una vez y termina) ----------
+  # Ejecuta db/init.sql con sqlcmd. Es idempotente: no borra datos existentes.
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ordenes_db_init
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - ./db/init.sql:/scripts/init.sql:ro
+    entrypoint: ["/bin/bash", "-c"]
+    command: ['/opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "$$MSSQL_SA_PASSWORD" -C -b -i /scripts/init.sql']
+    networks: [appnet]
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 256M }
+
+  # ---------- 2. API REST (Flask) ----------
+  api:
+    build: ./api
+    image: ${DOCKERHUB_USER:-local}/ordenes-api:v1.0
+    container_name: ordenes_api
+    restart: unless-stopped
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USER:-sa}
+      DB_PASSWORD: ${MSSQL_SA_PASSWORD}
+      DB_NAME: ${DB_NAME:-OrdenesDB}
+    depends_on:
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "5000:5000"
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 512M }
+
+  # ---------- 3. Frontend (Django) ----------
+  web:
+    build: ./web
+    image: ${DOCKERHUB_USER:-local}/ordenes-web:v1.0
+    container_name: ordenes_web
+    restart: unless-stopped
+    environment:
+      API_URL: ${API_URL:-http://api:5000}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/', timeout=8)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 512M }
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  sql_data:
+    name: ordenes_sql_data
