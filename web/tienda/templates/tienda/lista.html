@@ -1,0 +1,76 @@
+{% extends 'tienda/base.html' %}
+{% block title %}Órdenes | Examen segundo parcial{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">CLUSTER CONTROL // NODO 01</p>
+        <h1 class="neon-title">Examen segundo parcial</h1>
+        <p class="lede">Terminal central de órdenes y artículos transaccionales en tiempo real.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'crear_orden' %}">⚡ Nueva orden</a>
+</section>
+
+<section class="metrics" aria-label="Resumen del Sistema">
+    <article class="metric-card">
+        <span>Órdenes en Sistema</span>
+        <strong>{{ ordenes|length }}</strong>
+    </article>
+    <article class="metric-card">
+        <span>Estado del Cluster</span>
+        <strong style="color: var(--neon-green); font-size: 24px;">● ONLINE</strong>
+    </article>
+    <article class="metric-card">
+        <span>Motor de BD</span>
+        <strong style="color: var(--neon-pink); font-size: 24px;">MSSQL-2022</strong>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-heading">
+        <div>
+            <h2>REGISTRO DE ÓRDENES</h2>
+            <p>Selecciona una orden para gestionar productos o modificar datos del cliente.</p>
+        </div>
+        <span class="eyebrow" style="margin: 0; color: var(--neon-green);">STATUS // ACTIVO</span>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Fecha de Registro</th>
+                    <th>Total Acumulado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in ordenes %}
+                <tr>
+                    <td class="id-cell">#{{ o.id }}</td>
+                    <td style="color: #fff; font-weight: 700;">{{ o.cliente }}</td>
+                    <td style="font-weight: 700; color: {% if o.estado == 'Pagada' %}var(--neon-green){% elif o.estado == 'Anulada' %}var(--neon-pink){% else %}var(--neon-cyan){% endif %};">{{ o.estado }}</td>
+                    <td style="color: var(--muted); font-family: 'Share Tech Mono', monospace;">{{ o.fecha }}</td>
+                    <td class="money">${{ o.total|floatformat:2 }}</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn" href="{% url 'lista_detalles' o.id %}">⚡ Detalles</a>
+                            <a class="btn" href="{% url 'editar_orden' o.id %}">✏ Editar</a>
+                            <a class="btn btn-danger" href="{% url 'eliminar_orden' o.id %}">🗑 Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td class="empty-state" colspan="6">
+                        <strong>NO SE ENCONTRARON REGISTROS</strong>
+                        Inicializa una nueva orden para poblar la base de datos SQL Server.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

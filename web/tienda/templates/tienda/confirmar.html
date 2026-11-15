@@ -1,0 +1,23 @@
+{% extends 'tienda/base.html' %}
+{% block title %}Confirmar eliminación | Examen segundo parcial{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow" style="color: var(--neon-pink);">ADVERTENCIA // PURGA DE REGISTRO</p>
+        <h1 class="neon-pink">Eliminar {{ tipo }}</h1>
+        <p class="lede">Esta operación removerá permanentemente la información en SQL Server.</p>
+    </div>
+</section>
+
+<section class="confirm-card">
+    <h2 style="color: var(--neon-pink);">¿Confirmar eliminación de {{ tipo }} <span class="id-cell">#{{ id }}</span>?</h2>
+    <p class="lede">Si eliminas una orden, se borrarán automáticamente todos los artículos asociados.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button class="btn-danger" type="submit">🗑 Sí, eliminar permanentemente</button>
+            <a class="btn" href="{% if tipo == 'orden' %}{% url 'lista_ordenes' %}{% else %}{% url 'lista_detalles' oid %}{% endif %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'tienda/base.html' %}
+{% block title %}{{ accion }} Orden | Examen segundo parcial{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">TERMINAL DE ENTRADA // ÓRDENES</p>
+        <h1 class="neon-title">{{ accion }} orden</h1>
+        <p class="lede">Ingresa la identidad del cliente para procesar la transacción.</p>
+    </div>
+</section>
+
+<section class="form-card">
+    <h2>DATOS DE LA ORDEN</h2>
+    <p class="lede">El registro se envía a la API REST, que lo guarda en Microsoft SQL Server.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label for="cliente">Nombre del cliente</label>
+            <input id="cliente" name="cliente" value="{{ orden.cliente|default:'' }}" autocomplete="name" placeholder="Ej. Cyberpunk Corp" required>
+        </div>
+        <div class="field">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado">
+                {% for e in estados %}
+                <option value="{{ e }}" {% if e == orden.estado %}selected{% endif %}>{{ e }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-actions">
+            <button type="submit">⚡ Guardar orden</button>
+            <a class="btn" href="{% url 'lista_ordenes' %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

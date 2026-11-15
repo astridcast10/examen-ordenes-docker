@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Examen segundo parcial{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #06070d;
+            --surface: #0d0f1c;
+            --surface-raised: #14172b;
+            --surface-glow: rgba(0, 240, 255, 0.08);
+            --line: rgba(0, 240, 255, 0.25);
+            --line-pink: rgba(255, 0, 127, 0.4);
+            --text: #e6f1ff;
+            --muted: #8092b8;
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-yellow: #ffe600;
+            --neon-green: #00ff66;
+            --neon-purple: #9d4edd;
+            --danger: #ff2a55;
+            --radius: 8px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text);
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(ellipse at 15% 0%, rgba(0, 240, 255, 0.15) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 10%, rgba(255, 0, 127, 0.12) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 90%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+            font-family: 'Rajdhani', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .shell {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Site Header */
+        .site-header {
+            border-bottom: 2px solid var(--neon-cyan);
+            background: rgba(6, 7, 13, 0.92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 30px rgba(0, 240, 255, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            min-height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            color: #06070d;
+            background: var(--neon-cyan);
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: 0 0 20px var(--neon-cyan), inset 0 0 10px #fff;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .brand:hover .brand-mark {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        .brand-copy {
+            display: grid;
+            line-height: 1.15;
+        }
+
+        .brand-copy strong {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 7px var(--neon-cyan), 0 0 18px rgba(0, 240, 255, 0.6);
+        }
+
+        .brand-copy span {
+            margin-top: 4px;
+            color: var(--neon-pink);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
+        }
+
+        .nav-link {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 9px 18px;
+            border: 1px solid var(--neon-cyan);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            background: rgba(0, 240, 255, 0.08);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+            transition: all .2s ease;
+        }
+
+        .nav-link:hover, .nav-link:focus-visible {
+            background: var(--neon-cyan);
+            color: #06070d;
+            box-shadow: 0 0 25px var(--neon-cyan);
+            text-shadow: none;
+            transform: translateY(-2px);
+        }
+
+        main.shell {
+            padding-top: 50px;
+            padding-bottom: 80px;
+        }
+
+        /* Neon Titles & Headings */
+        .neon-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 40px rgba(0, 240, 255, 0.8),
+                0 0 80px rgba(0, 240, 255, 0.4);
+            animation: neonPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonPulse {
+            0% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 10px var(--neon-cyan),
+                    0 0 20px var(--neon-cyan),
+                    0 0 40px rgba(0, 240, 255, 0.7);
+            }
+            100% {
+                text-shadow:
+                    0 0 7px #fff,
+                    0 0 14px var(--neon-cyan),
+                    0 0 30px var(--neon-cyan),
+                    0 0 60px rgba(0, 240, 255, 0.95),
+                    0 0 90px var(--neon-cyan);
+            }
+        }
+
+        .neon-pink {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 12px var(--neon-pink),
+                0 0 25px var(--neon-pink),
+                0 0 50px rgba(255, 0, 127, 0.8);
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: var(--neon-cyan);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+
+        h1, h2, p { margin-top: 0; }
+        h1 { margin-bottom: 8px; font-size: clamp(28px, 4.5vw, 42px); line-height: 1.1; }
+        h2 { margin-bottom: 8px; font-family: 'Orbitron', sans-serif; font-size: 20px; letter-spacing: 0.05em; }
+        .lede { max-width: 650px; margin-bottom: 0; color: var(--muted); font-size: 16px; font-weight: 500; }
+
+        /* Cyber Panels & Cards */
+        .panel, .metric-card, .form-card, .confirm-card {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: rgba(13, 15, 28, 0.88);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before, .metric-card::before, .form-card::before, .confirm-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(0, 240, 255, 0.03);
+        }
+
+        .panel-heading h2 { margin: 0; color: #fff; }
+        .panel-heading p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .metric-card {
+            padding: 20px 22px;
+            border-left: 3px solid var(--neon-cyan);
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+        }
+
+        .metric-card span {
+            display: block;
+            color: var(--muted);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .metric-card strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', monospace;
+            font-size: 30px;
+            line-height: 1.15;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 16px 20px; border-bottom: 1px solid rgba(0, 240, 255, 0.12); white-space: nowrap; }
+        th {
+            color: var(--neon-cyan);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            background: rgba(0, 240, 255, 0.05);
+        }
+        td { font-size: 15px; font-weight: 600; }
+        tbody tr:last-child td { border-bottom: 0; }
+        tbody tr { transition: background .15s ease; }
+        tbody tr:hover { background: rgba(0, 240, 255, 0.06); }
+
+        .id-cell {
+            color: var(--neon-cyan);
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: 800;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        .money {
+            color: var(--neon-yellow);
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: 800;
+            font-size: 16px;
+            text-shadow: 0 0 8px rgba(255, 230, 0, 0.4);
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        /* Cyber Buttons */
+        .btn, button {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.06);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+            transition: all .2s ease;
+        }
+
+        .btn:hover, button:hover {
+            transform: translateY(-2px);
+            background: var(--neon-cyan);
+            color: #06070d;
+            box-shadow: 0 0 25px var(--neon-cyan);
+        }
+
+        .btn-primary, button[type="submit"] {
+            border-color: var(--neon-cyan);
+            background: var(--neon-cyan);
+            color: #06070d;
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-primary:hover, button[type="submit"]:hover {
+            background: #ffffff;
+            color: #06070d;
+            box-shadow: 0 0 35px var(--neon-cyan), 0 0 50px #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            background: rgba(255, 0, 127, 0.08);
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: var(--neon-pink);
+            color: #ffffff;
+            box-shadow: 0 0 25px var(--neon-pink);
+        }
+
+        button.btn-danger[type="submit"] {
+            border-color: var(--neon-pink);
+            color: #fff;
+            background: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+        }
+
+        button.btn-danger[type="submit"]:hover {
+            background: #ff2a55;
+            box-shadow: 0 0 35px var(--neon-pink);
+        }
+
+        .empty-state {
+            padding: 50px 20px;
+            color: var(--muted);
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .empty-state strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+        }
+
+        /* Forms */
+        .form-card, .confirm-card {
+            width: min(100%, 640px);
+            padding: clamp(24px, 5vw, 40px);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+            margin: 22px 0;
+        }
+
+        label {
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            min-height: 48px;
+            padding: 10px 16px;
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            border-radius: 4px;
+            outline: 0;
+            color: #ffffff;
+            background: rgba(6, 7, 13, 0.85);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all .2s ease;
+        }
+
+        select option { background: #0b0d18; color: #fff; }
+
+        input:focus, select:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            background: rgba(0, 240, 255, 0.04);
+        }
+
+        .form-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+        /* Notifications */
+        .msg {
+            margin: 0 0 16px;
+            padding: 14px 18px;
+            border: 1px solid;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        }
+
+        .success {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            background: rgba(0, 255, 102, 0.08);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+        }
+
+        .error {
+            border-color: var(--neon-pink);
+            color: #ff99bb;
+            background: rgba(255, 0, 127, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.25);
+        }
+
+        /* Cyberpunk Footer */
+        .site-footer {
+            margin-top: 60px;
+            padding: 28px 0;
+            border-top: 2px solid var(--neon-cyan);
+            background: rgba(6, 7, 13, 0.95);
+            box-shadow: 0 -4px 30px rgba(0, 240, 255, 0.15);
+            position: relative;
+        }
+
+        .site-footer::before {
+            content: "";
+            position: absolute;
+            top: -2px; left: 10%;
+            width: 80%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        }
+
+        .footer-credits {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .neon-author {
+            color: var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 8px var(--neon-pink), 0 0 18px rgba(255, 0, 127, 0.6);
+            display: inline-block;
+            padding: 0 4px;
+        }
+
+        .footer-status {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.15em;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        @media (max-width: 768px) {
+            .shell { width: min(100% - 28px, 1180px); }
+            main.shell { padding-top: 36px; }
+            .page-heading { align-items: flex-start; flex-direction: column; }
+            .metrics { grid-template-columns: 1fr; gap: 12px; }
+            .panel-heading { align-items: flex-start; flex-direction: column; padding: 18px; }
+            .footer-inner { flex-direction: column; text-align: center; gap: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="shell header-inner">
+            <a class="brand" href="{% url 'lista_ordenes' %}">
+                <span class="brand-mark" aria-hidden="true">ESP</span>
+                <span class="brand-copy">
+                    <strong>Examen segundo parcial</strong>
+                    <span>// INFRAESTRUCTURA Y SISTEMAS DISTRIBUIDOS</span>
+                </span>
+            </a>
+            <a class="nav-link" href="{% url 'lista_ordenes' %}">⚡ Órdenes</a>
+        </div>
+    </header>
+
+    <main class="shell">
+        {% for m in messages %}
+            <div class="msg {% if m.tags == 'error' %}error{% else %}success{% endif %}" role="status">{{ m }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell footer-inner">
+            <div class="footer-brand">
+                ⚡ EXAMEN SEGUNDO PARCIAL
+            </div>
+            <div class="footer-credits">
+                Desarrollado por <span class="neon-author">Gustavo Siu</span> y <span class="neon-author">Astrid Castellanos</span>
+            </div>
+            <div class="footer-status">
+                <span class="status-dot"></span>CLUSTER ONLINE // MSSQL-2022
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

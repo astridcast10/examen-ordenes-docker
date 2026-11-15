@@ -1,0 +1,31 @@
+ .gitattributes                                  |   1 [32m+[m
+ api/.dockerignore                               |   9 [32m+[m
+ api/Dockerfile                                  |  21 [32m+[m
+ api/app.py                                      | 340 [32m+++++++++++++[m
+ api/requirements.txt                            |   3 [32m+[m
+ db/init.sql                                     | 126 [32m+++++[m
+ evidencias/.gitkeep                             |   0
+ web/.dockerignore                               |  10 [32m+[m
+ web/Dockerfile                                  |  23 [32m+[m
+ web/manage.py                                   |  22 [32m+[m
+ web/requirements.txt                            |   2 [32m+[m
+ web/tienda/__init__.py                          |   0
+ web/tienda/admin.py                             |   3 [32m+[m
+ web/tienda/apps.py                              |   6 [32m+[m
+ web/tienda/migrations/__init__.py               |   0
+ web/tienda/models.py                            |   3 [32m+[m
+ web/tienda/templates/tienda/base.html           | 623 [32m++++++++++++++++++++++++[m
+ web/tienda/templates/tienda/confirmar.html      |  23 [32m+[m
+ web/tienda/templates/tienda/form_detalle.html   |  34 [32m++[m
+ web/tienda/templates/tienda/form_orden.html     |  35 [32m++[m
+ web/tienda/templates/tienda/lista.html          |  76 [32m+++[m
+ web/tienda/templates/tienda/lista_detalles.html |  75 [32m+++[m
+ web/tienda/tests.py                             |   3 [32m+[m
+ web/tienda/urls.py                              |  13 [32m+[m
+ web/tienda/views.py                             | 167 [32m+++++++[m
+ web/tienda_project/__init__.py                  |   0
+ web/tienda_project/asgi.py                      |  16 [32m+[m
+ web/tienda_project/settings.py                  | 127 [32m+++++[m
+ web/tienda_project/urls.py                      |   7 [32m+[m
+ web/tienda_project/wsgi.py                      |  16 [32m+[m
+ 30 files changed, 1784 insertions(+)

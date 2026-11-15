@@ -1,0 +1,75 @@
+{% extends 'tienda/base.html' %}
+{% block title %}Detalle de Orden #{{ orden.id }} | Examen segundo parcial{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">CONTROL TRANSACCIONAL // ORDEN #{{ orden.id }}</p>
+        <h1 class="neon-title">Detalle de orden <span class="id-cell">#{{ orden.id }}</span></h1>
+        <p class="lede">Cliente: <strong style="color: var(--neon-cyan);">{{ orden.cliente }}</strong> &nbsp;|&nbsp; Estado: <strong style="color: var(--neon-cyan);">{{ orden.estado }}</strong></p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'crear_detalle' orden.id %}">⚡ Agregar producto</a>
+</section>
+
+<section class="metrics" aria-label="Resumen de la orden">
+    <article class="metric-card">
+        <span>Cliente Asignado</span>
+        <strong style="font-size: 24px; color: #fff;">{{ orden.cliente }}</strong>
+    </article>
+    <article class="metric-card">
+        <span>Total de Artículos</span>
+        <strong>{{ detalles|length }}</strong>
+    </article>
+    <article class="metric-card">
+        <span>Monto Total</span>
+        <strong class="money">${{ orden.total|default:0|floatformat:2 }}</strong>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-heading">
+        <div>
+            <h2>PRODUCTOS EN LA ORDEN</h2>
+            <p>Lista de ítems computados en la base de datos para esta transacción.</p>
+        </div>
+        <a class="btn" href="{% url 'lista_ordenes' %}">← Volver a órdenes</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in detalles %}
+                <tr>
+                    <td class="id-cell">#{{ d.id }}</td>
+                    <td style="color: #fff; font-weight: 700;">{{ d.producto }}</td>
+                    <td style="font-family: 'Share Tech Mono', monospace; color: var(--neon-cyan);">{{ d.cantidad }}</td>
+                    <td class="money">${{ d.precio_unitario|floatformat:2 }}</td>
+                    <td class="money">${{ d.subtotal|floatformat:2 }}</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn" href="{% url 'editar_detalle' orden.id d.id %}">✏ Editar</a>
+                            <a class="btn btn-danger" href="{% url 'eliminar_detalle' orden.id d.id %}">🗑 Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td class="empty-state" colspan="6">
+                        <strong>ESTA ORDEN AÚN NO TIENE PRODUCTOS</strong>
+                        Agrega un artículo para computar automáticamente el total en la orden.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

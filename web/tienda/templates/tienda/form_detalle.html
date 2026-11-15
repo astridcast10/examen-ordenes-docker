@@ -1,0 +1,34 @@
+{% extends 'tienda/base.html' %}
+{% block title %}{{ accion }} Producto | Examen segundo parcial{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">TERMINAL DE ENTRADA // ORDEN #{{ oid }}</p>
+        <h1 class="neon-title">{{ accion }} producto</h1>
+        <p class="lede">Especifica los parámetros del artículo para calcular el balance de la orden.</p>
+    </div>
+</section>
+
+<section class="form-card">
+    <h2>PARÁMETROS DEL PRODUCTO</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label for="producto">Nombre del producto</label>
+            <input id="producto" name="producto" value="{{ detalle.producto|default:'' }}" autocomplete="off" placeholder="Ej. CyberDeck V3" required>
+        </div>
+        <div class="field">
+            <label for="cantidad">Cantidad</label>
+            <input id="cantidad" name="cantidad" type="number" min="1" step="1" inputmode="numeric" value="{{ detalle.cantidad|default:'1' }}" required>
+        </div>
+        <div class="field">
+            <label for="precio_unitario">Precio unitario ($)</label>
+            <input id="precio_unitario" name="precio_unitario" type="number" step="0.01" min="0" inputmode="decimal" value="{{ detalle.precio_unitario|default:'' }}" placeholder="Ej. 199.99" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit">⚡ Guardar producto</button>
+            <a class="btn" href="{% url 'lista_detalles' oid %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
